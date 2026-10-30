@@ -1,0 +1,136 @@
+<title>SQL Query Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Learn and use SQL in your browser: drag-and-drop query builder, SQL editor, lessons with checked exercises, sample databases and your own data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>/*@@CSS@@*/</style>
+
+<div class="app" id="app">
+  <header class="topbar">
+    <button class="icon-btn only-narrow" id="btn-schema" type="button" aria-label="Show tables" aria-controls="schema"></button>
+    <div class="brand" aria-label="Query Lab">
+      <span class="logo" id="logo"></span>
+      <span class="brand-name">Query&#8239;Lab</span>
+    </div>
+    <div class="ds">
+      <button class="ds-btn" id="ds-btn" type="button" aria-haspopup="menu" aria-expanded="false">
+        <span class="ds-ic" id="ds-ic"></span>
+        <span class="ds-label"><span class="ds-kicker">Database</span><span class="ds-name" id="ds-name">Online Shop</span></span>
+        <span class="ds-dirty" id="ds-dirty" hidden>modified</span>
+        <span class="ds-chev" id="ds-chev"></span>
+      </button>
+      <div class="menu ds-menu" id="ds-menu" role="menu" hidden></div>
+    </div>
+    <div class="top-spacer"></div>
+    <button class="btn btn-quiet" id="btn-import" type="button"><span id="ic-import"></span><span class="hide-sm">Import data</span></button>
+    <button class="icon-btn" id="btn-tour" type="button" aria-label="Take the tour" title="Take the tour"></button>
+    <button class="icon-btn" id="btn-theme" type="button" aria-label="Switch between light and dark" title="Light / dark"></button>
+    <button class="btn btn-learn" id="btn-learn" type="button" aria-controls="side"><span id="ic-learn"></span><span class="hide-sm">Learn</span><span class="pill" id="learn-count">0/0</span></button>
+  </header>
+
+  <aside class="pane schema" id="schema" aria-label="Tables">
+    <div class="pane-head">
+      <span class="eyebrow">Tables</span><span class="pane-sub" id="schema-sub"></span>
+      <button class="icon-btn icon-sm only-narrow" type="button" data-close="schema" aria-label="Close tables"></button>
+    </div>
+    <div class="pane-body" id="schema-body"></div>
+    <div class="pane-foot" id="schema-foot"></div>
+  </aside>
+  <div class="vsplit" id="split-left" role="separator" aria-orientation="vertical" aria-label="Resize the tables panel" tabindex="0"></div>
+
+  <main class="work" id="work">
+    <div class="task-strip" id="task-strip" hidden></div>
+    <section class="workspace" id="workspace" aria-label="Query">
+      <div class="ws-head">
+        <div class="seg" role="tablist" aria-label="How to write the query">
+          <button role="tab" type="button" id="mode-builder" aria-selected="true"></button>
+          <button role="tab" type="button" id="mode-editor" aria-selected="false"></button>
+        </div>
+        <div class="ws-tools" id="ws-tools"></div>
+        <button class="btn btn-run" id="btn-run" type="button" title="Run (Ctrl+Enter)"></button>
+      </div>
+
+      <div class="builder" id="builder">
+        <div class="canvas" id="canvas">
+          <div class="stage" id="stage"><svg class="links" id="links" aria-hidden="true"></svg></div>
+          <div class="canvas-empty" id="canvas-empty" hidden></div>
+        </div>
+        <div class="bld-bottom" id="bld-bottom">
+          <div class="fields-wrap">
+            <div class="sub-head">
+              <span class="eyebrow">Columns</span>
+              <span class="sub-tools">
+                <label class="chk"><input type="checkbox" id="b-distinct"> No duplicates</label>
+                <label class="mini">Limit <input type="number" id="b-limit" min="1" step="1" placeholder="all" inputmode="numeric"></label>
+                <label class="mini">Filters <select id="b-match"><option value="AND">all must match</option><option value="OR">any may match</option></select></label>
+              </span>
+            </div>
+            <div class="fields" id="fields"></div>
+          </div>
+          <div class="bsql-wrap">
+            <div class="sub-head">
+              <span class="eyebrow">Generated SQL</span>
+              <span class="sub-tools">
+                <button class="btn btn-xs" type="button" id="b-copy">Copy</button>
+                <button class="btn btn-xs" type="button" id="b-edit">Edit as SQL</button>
+              </span>
+            </div>
+            <div class="bsql-scroll">
+              <pre class="sql bsql" id="bsql"></pre>
+              <div class="bexplain" id="bexplain"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor" id="editor" hidden>
+        <div class="snips" id="snips"></div>
+        <div class="ed" id="ed">
+          <div class="ed-gutter" id="ed-gutter" aria-hidden="true"></div>
+          <div class="ed-main" id="ed-main">
+            <pre class="ed-hl sql" id="ed-hl" aria-hidden="true"></pre>
+            <textarea class="ed-ta" id="ed-ta" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off" aria-label="SQL editor"></textarea>
+            <div class="ed-dropcaret" id="ed-dropcaret" hidden></div>
+            <div class="ac" id="ac" role="listbox" aria-label="Suggestions" hidden></div>
+          </div>
+        </div>
+        <div class="ed-status" id="ed-status"></div>
+      </div>
+    </section>
+    <div class="hsplit" id="split-mid" role="separator" aria-orientation="horizontal" aria-label="Resize the results" tabindex="0"></div>
+    <section class="results" id="results" aria-label="Results">
+      <div class="res-head" id="res-head"></div>
+      <div class="res-body" id="res-body"></div>
+    </section>
+  </main>
+
+  <div class="vsplit" id="split-right" role="separator" aria-orientation="vertical" aria-label="Resize the lessons panel" tabindex="0"></div>
+  <aside class="pane side" id="side" aria-label="Learn">
+    <div class="pane-head side-tabs" role="tablist">
+      <button role="tab" type="button" data-side="learn" aria-selected="true">Lessons</button>
+      <button role="tab" type="button" data-side="ref" aria-selected="false">Reference</button>
+      <button role="tab" type="button" data-side="hist" aria-selected="false">History</button>
+      <span class="top-spacer"></span>
+      <button class="icon-btn icon-sm" type="button" data-close="side" aria-label="Hide the lessons panel"></button>
+    </div>
+    <div class="pane-body side-body" id="side-learn"></div>
+    <div class="pane-body side-body" id="side-ref" hidden></div>
+    <div class="pane-body side-body" id="side-hist" hidden></div>
+  </aside>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="modal-wrap" id="modal" hidden><div class="modal" id="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title"></div></div>
+<aside class="sheet" id="sheet" aria-label="Ask Claude" hidden></aside>
+<div class="menu pop" id="pop" hidden></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="tour" id="tour" hidden></div>
+<div class="boot" id="boot">
+  <div class="boot-card">
+    <div class="boot-title">Query&#8239;Lab</div>
+    <div class="boot-msg" id="boot-msg">Starting the database engine…</div>
+    <div class="boot-bar"><span></span></div>
+  </div>
+</div>
+<script>/*@@JS@@*/</script>
